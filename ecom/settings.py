@@ -91,9 +91,9 @@ WSGI_APPLICATION = "ecom.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "warehouse",
-        'USER': "wuser",
-        'PASSWORD': "wuser123",
+        'NAME': "wattmart",
+        'USER': "wmart",
+        'PASSWORD': "wmart123",
     }
 }
 
