@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from sales.views import (CartView)
 from users.views import (LandingPageView, 
                          SignupView, 
@@ -34,6 +34,7 @@ from django.contrib.auth.views import (
     PasswordResetConfirmView,
     PasswordResetCompleteView
 )
+
 # from sales.templates.sales.fonts import helvetiker.typeface.json
 
 urlpatterns = [
@@ -55,4 +56,5 @@ urlpatterns = [
     path('password-reset-complete/', PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    path('', include('sales.urls')), # new
 ]
