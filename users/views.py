@@ -53,7 +53,7 @@ class ItemListView(generic.TemplateView):
         context = super(ItemListView, self).get_context_data(**kwargs)
         user = self.request.user
         
-        queryset = Item.objects.all().values()
+        queryset = Item.objects.all().values()[:24]
         context.update({
                 "prods_list": queryset
             })
