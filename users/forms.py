@@ -11,11 +11,11 @@ class UserModelForm(forms.ModelForm):
     class Meta:
         model = User
         fields = (
+            'first_name',
+            'last_name',
             'username',
             'email',
-            'mobile',
-            'organization',
-            'domain',
+            'address'
         )
 
     def clean_first_name(self):

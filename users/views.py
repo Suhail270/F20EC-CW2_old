@@ -6,7 +6,7 @@ import csv
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, reverse
 from .forms import CustomUserCreationForm
-from .models import Product
+from sales.models import Item
 # Create your views here.
 
 class LandingPageView(generic.ListView):
@@ -41,19 +41,19 @@ class OurTeamView(generic.TemplateView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-class ProductListView(generic.TemplateView):
+class ItemListView(generic.TemplateView):
     template_name = "products-display.html"
     context_object_name = "prods_list"
 
     def get_queryset(self) :
-        queryset = Product.objects.all().values()
+        queryset = Item.objects.all().values()
         return queryset
 
     def get_context_data(self, **kwargs):
-        context = super(ProductListView, self).get_context_data(**kwargs)
+        context = super(ItemListView, self).get_context_data(**kwargs)
         user = self.request.user
         
-        queryset = Product.objects.all().values()
+        queryset = Item.objects.all().values()
         context.update({
                 "prods_list": queryset
             })
