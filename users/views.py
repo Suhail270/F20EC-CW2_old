@@ -1,3 +1,4 @@
+from django.db.models.query import QuerySet
 from django.views import generic
 from django.http.response import JsonResponse
 import string
@@ -5,12 +6,12 @@ import csv
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, reverse
 from .forms import CustomUserCreationForm
-
+from .models import Product
 # Create your views here.
 
-class LandingPageView(generic.TemplateView):
+class LandingPageView(generic.ListView):
     template_name = "landing.html"
-
+    
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect("services")
@@ -42,6 +43,21 @@ class OurTeamView(generic.TemplateView):
 
 class ProductListView(generic.TemplateView):
     template_name = "products-display.html"
+    context_object_name = "prods_list"
+
+    def get_queryset(self) :
+        queryset = Product.objects.all().values()
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductListView, self).get_context_data(**kwargs)
+        user = self.request.user
+        
+        queryset = Product.objects.all().values()
+        context.update({
+                "prods_list": queryset
+            })
+        return context  
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
