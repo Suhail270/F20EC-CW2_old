@@ -39,3 +39,23 @@ class Member(models.Model):
     end_date = models.DateTimeField(null=True, blank=True)
     active = models.BooleanField(default=True)
     plan = models.ForeignKey(MembershipPlan, null=True, blank=True, on_delete=models.SET_NULL)
+
+class Product(models.Model):
+    # uniq_id = models.CharField(max_length=500)
+    product_name = models.CharField(max_length=500)
+    product_category_tree = models.CharField(max_length=500)
+    retail_price = models.IntegerField()
+    image = models.URLField()
+    description = models.CharField(max_length=500)
+    brand = models.CharField(max_length=100)
+    def __str__(self) :
+        return f"{self.product_name}"
+
+class Cart(models.Model):
+    user = models.ForeignKey(User,null=True, blank=True, on_delete=models.SET_NULL)
+    date = models.DateTimeField(auto_now_add=True, blank=True)
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1) 
