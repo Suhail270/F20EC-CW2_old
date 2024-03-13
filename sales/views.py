@@ -1,4 +1,5 @@
 import datetime
+from django.db.models.query import QuerySet
 from django.views import generic
 from django.http.response import JsonResponse
 from django.http import HttpResponse
@@ -9,11 +10,20 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
 import stripe
 from .models import Order,OrderItem,Item
-class CartView(generic.TemplateView):
-    template_name = "cart.html"
 
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+# TODO add loginrequiredmixin
+class CartListView(generic.ListView):
+    template_name = "cart.html"
+    context_object_name = "items"
+
+    def get_queryset(self):
+        user = self.request.user
+        cart, created = Order.objects.get_or_create(
+            user = self.request.user,
+            ordered = False
+        )
+        queryset = OrderItem.objects.filter(order=cart)
+        return queryset
     
 class PaymentView(generic.TemplateView):
     template_name = 'stripe.html'
@@ -80,11 +90,9 @@ def stripe_webhook(request):
 @csrf_exempt
 def add_to_cart(request, id):
     item = get_object_or_404(Item, id=id)
-    orderID,created = Order.objects.get_or_create(
+    orderID, created = Order.objects.get_or_create(
         user = request.user,
-        ordered_date = datetime.date.today()
-        # ordered = False,
-        
+        ordered = False
     )
     
     orderitems = OrderItem.objects.filter(Order=orderID,item=item).first()
@@ -100,9 +108,3 @@ def add_to_cart(request, id):
         )
     print("Added!")
     return JsonResponse({'message': 'Item added to cart successfully'})
-
-def cart_list_view(request):
-    pass
-
-def remove_from_cart(request, id):
-    pass
