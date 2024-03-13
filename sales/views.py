@@ -108,3 +108,24 @@ def add_to_cart(request, id):
         )
     print("Added!")
     return JsonResponse({'message': 'Item added to cart successfully'})
+
+# def remove_from_cart(request, id):
+#     order_item = OrderItem.objects.get(id=id)
+#     orderID, created = Order.objects.get_or_create(
+#         user = request.user,
+#         ordered = False
+#     )
+    
+#     orderitems = OrderItem.objects.filter(Order=orderID,item=item).first()
+
+#     if orderitems is not None:
+#         orderitems.quantity +=1
+#         orderitems.save()
+#     else:
+#         OrderItem.objects.create(
+#             order = orderID,
+#             item = item,
+#             quantity = 1
+#         )
+#     print("Added!")
+#     return JsonResponse({'message': 'Item added to cart successfully'})
