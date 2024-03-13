@@ -57,6 +57,7 @@ class ItemListView(generic.TemplateView):
         context.update({
                 "prods_list": queryset
             })
+        
         return context  
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)

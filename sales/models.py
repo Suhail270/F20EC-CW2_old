@@ -10,7 +10,7 @@ class Item(models.Model):
     brand = models.CharField(max_length=100)
     
     def __str__(self) :
-        return f"{self.product_name}"
+        return f"{self.name}"
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

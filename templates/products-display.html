@@ -16,7 +16,10 @@
           <h2 class="text-gray-900 title-font text-lg font-medium">{{prod.name}}</h2>
           <div class = "flex justify-between">
             <p class="mt-1">{{prod.retail_price}}</p>
-            <button class="flex ml-4 text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">Add to Cart</button>
+            <form action="{% url 'add_to_cart' id=prod.id %}" method="post">
+              {% csrf_token %}
+            <button type="submit" class="flex ml-4 text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">Add to Cart</button>
+          </form>
             </div>
         </div>
       </div>
