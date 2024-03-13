@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ item.name }} - Item Details</title>
+    <title>{{ object.name }} - Item Details</title>
 </head>
 <body>
-    <h1> {{ item.name }} - Item Details</h1>
-    <p>Category: {{ item.category_tree }}</p>
-    <p>Retail Price: ${{ item.retail_price }}</p>
-    <p>Description: {{ item.description }}</p>
+    <h1> {{ object.name }} - Item Details</h1>
+    <p>Image: <img src="{{ object.image }}" alt="{{ object.name }}"></p>
+    <p>Category: {{ object.category_tree }}</p>
+    <p>Retail Price: ${{ object.retail_price }}</p>
+    <p>Description: {{ object.description }}</p>
     <!-- Add other details as needed -->
 </body>
 </html>
