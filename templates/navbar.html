@@ -3,14 +3,14 @@
 
     {% if request.user.is_member %}
       <a href="{% url 'visualization' %}" class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0 mr-4">
-        {% load static %} <img class="w-45 h-10" src="{% static "warehouse/images/logo.png" %}" alt="Logo" />
+        {% load static %} <a href="{% url 'landing-page' %}"><img class="w-90 h-20" src="{% static "warehouse/images/logo.jpg" %}" alt="Logo" /></a>
       </a>
     {% else %}
-      {% load static %} <img class="w-45 h-10 mb-4 md:mb-0 mr-4" src="{% static "warehouse/images/logo.png" %}" alt="Logo" />
+      {% load static %} <a href="{% url 'landing-page' %}"><img class="w-90 h-20 mb-4 md:mb-0 mr-4" src="{% static "warehouse/images/logo.jpg" %}" alt="Logo" /></a>
     {% endif %}
 
     <!-- Search bar -->
-    <form action="#" method="get" class="flex items-center flex-grow mb-4 md:mb-0 mr-4">
+    <form action="{% url 'products-list' %}" method="get" class="flex items-center flex-grow mb-4 md:mb-0 mr-4">
       <input type="text" name="query" placeholder="Search" class="flex-grow px-4 py-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-500" />
       <button type="submit" class="ml-2 bg-indigo-500 text-white py-2 px-4 rounded hover:bg-indigo-600 focus:outline-none focus:bg-indigo-600">
         Search
