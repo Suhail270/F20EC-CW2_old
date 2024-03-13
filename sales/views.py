@@ -78,8 +78,8 @@ def stripe_webhook(request):
     return HttpResponse(status=200)
 
 @csrf_exempt
-def add_to_cart(request,id):
-    item = get_object_or_404(Item,id=id)
+def add_to_cart(request, id):
+    item = get_object_or_404(Item, id=id)
     orderID,created = Order.objects.get_or_create(
         user = request.user,
         ordered_date = datetime.date.today()
@@ -94,10 +94,16 @@ def add_to_cart(request,id):
         orderitems.save()
     else:
         OrderItem.objects.create(
-            Order = orderID,
+            order = orderID,
             item = item,
-            quantity =1
+            quantity = 1
         )
     print("Added!")
 
     return HttpResponse(status=200)
+
+def cart_list_view(request):
+    pass
+
+def remove_from_cart(request, id):
+    pass
