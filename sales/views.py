@@ -92,10 +92,11 @@ def add_to_cart(request, id):
     item = get_object_or_404(Item, id=id)
     orderID, created = Order.objects.get_or_create(
         user = request.user,
-        ordered = False
+        ordered = False,
+        ordered_date = datetime.date.today()
     )
     
-    orderitems = OrderItem.objects.filter(Order=orderID,item=item).first()
+    orderitems = OrderItem.objects.filter(order=orderID,item=item).first()
 
     if orderitems is not None:
         orderitems.quantity +=1
