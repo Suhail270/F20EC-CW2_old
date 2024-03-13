@@ -10,12 +10,29 @@ from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
 import stripe
-from .models import Order,OrderItem,Item
+from .models import Order,OrderItem,Item,Wishlist,WishlistItem
 from django.template.loader import render_to_string
 
 # TODO add loginrequiredmixin
 class CartListView(generic.TemplateView):
     template_name = "cart.html"
+
+class WishlistView(generic.TemplateView):
+    template_name = "wishlist.html"
+
+def load_wishlist(request):
+    user = user.request
+    wishlist, created = Wishlist.objects.get_or_create(user=user)
+    wishlist_items = WishlistItem.objects.filter(wishlist=wishlist)
+    data = []
+    for wishlist_item in wishlist_items:
+        data.append({
+            "id": wishlist_item.id,
+            "quantity": wishlist_item.quantity,
+            "item": model_to_dict(wishlist_item.item)
+        })
+    return JsonResponse({"h": render_to_string(request=request, template_name="wishlist_content.html", context={"wishlist_items": data})})
+
     
 def load_cart_items(request):
     user =  request.user
@@ -24,14 +41,14 @@ def load_cart_items(request):
         ordered = False
     )
     order_items = OrderItem.objects.filter(order=cart)
-    l = []
+    data = []
     for order_item in order_items:
-        l.append({
+        data.append({
             "id": order_item.id,
             "quantity": order_item.quantity,
             "item": model_to_dict(order_item.item)
         })
-    return JsonResponse({"h": render_to_string(request=request, template_name="cart_list.html", context={"cart_items": l})})
+    return JsonResponse({"h": render_to_string(request=request, template_name="cart_list.html", context={"cart_items": data})})
     
 class PaymentView(generic.TemplateView):
     template_name = 'stripe.html'
@@ -106,7 +123,7 @@ def add_to_cart(request, id):
     orderitems = OrderItem.objects.filter(order=orderID,item=item).first()
 
     if orderitems is not None:
-        orderitems.quantity +=1
+        orderitems.quantity += 1
         orderitems.save()
     else:
         OrderItem.objects.create(
@@ -117,23 +134,30 @@ def add_to_cart(request, id):
     print("Added!")
     return JsonResponse({'message': 'Item added to cart successfully'})
 
-# def remove_from_cart(request, id):
-#     order_item = OrderItem.objects.get(id=id)
-#     orderID, created = Order.objects.get_or_create(
-#         user = request.user,
-#         ordered = False
-#     )
-    
-#     orderitems = OrderItem.objects.filter(Order=orderID,item=item).first()
+@csrf_exempt
+def remove_from_cart(request, id):
+    OrderItem.objects.filter(id=id).first().delete()
+    return JsonResponse({'message': 'item deleted'})
 
-#     if orderitems is not None:
-#         orderitems.quantity +=1
-#         orderitems.save()
-#     else:
-#         OrderItem.objects.create(
-#             order = orderID,
-#             item = item,
-#             quantity = 1
-#         )
-#     print("Added!")
-#     return JsonResponse({'message': 'Item added to cart successfully'})
+@csrf_exempt
+def remove_from_wishlist(request, id):
+    WishlistItem.objects.filter(id=id).first().delete()
+    return JsonResponse({'message': 'item deleted'})
+
+@csrf_exempt
+def add_to_wishlist(request, id):
+    user = request.user
+    item = get_object_or_404(Item, id=id)
+    wishlist, created = Wishlist.objects.get_or_create(user=user)
+    wishlist_item = WishlistItem.objects.filter(wishlist=wishlist, item=item).first()
+
+    if wishlist_item is not None:
+        wishlist_item.quantity += 1
+    else:
+        WishlistItem.objects.create(
+            wishlist=wishlist,
+            item=item,
+            quantity=1
+        )
+    print("success")
+    return JsonResponse({'message': 'Item added to wishlist successfully'})

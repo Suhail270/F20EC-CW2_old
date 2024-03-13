@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from sales.views import (CartListView,add_to_cart,load_cart_items)
+from sales.views import (CartListView,add_to_cart,load_cart_items,load_wishlist)
 from users.views import (LandingPageView, 
                          SignupView, 
                          ServicesView, 
@@ -49,6 +49,7 @@ urlpatterns = [
     path("our-team/", OurTeamView.as_view(), name='team'),
     path('cart/', CartListView.as_view(), name='cart'),
     path('ajax/load_cart_list/', load_cart_items, name='ajax_load_cart_list'),
+    path('ajax/load_wishlist/', load_wishlist, name='ajax_load_wishlist'),
     path('signup/', SignupView.as_view(), name='signup'),
     path('membership-plans/', MembershipPlanView.as_view(), name='member-plan'),
     path('membership-plans/payment', PaymentView.as_view(), name='payment'),
