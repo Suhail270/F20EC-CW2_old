@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import User
+import datetime
 
 class Item(models.Model):
     name = models.CharField(max_length=500)
@@ -16,8 +17,18 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     ordered = models.BooleanField(default=False)
     ordered_date = models.DateTimeField()
+    edited_date = models.DateTimeField(default=datetime.now)
 
 class OrderItem(models.Model):
-    Order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+class Wishlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    edited_date = models.DateTimeField(default=datetime.now)
+
+class WishlistItem(models.Model):
+    wishlist = models.ForeignKey(Wishlist, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
