@@ -1,6 +1,6 @@
 from django.db import models
 from users.models import User
-import datetime
+from django.utils import timezone
 
 class Item(models.Model):
     name = models.CharField(max_length=500)
@@ -17,7 +17,7 @@ class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     ordered = models.BooleanField(default=False)
     ordered_date = models.DateTimeField()
-    edited_date = models.DateTimeField(default=datetime.now)
+    edited_date = models.DateTimeField(default=timezone.now)
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -26,7 +26,7 @@ class OrderItem(models.Model):
 
 class Wishlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    edited_date = models.DateTimeField(default=datetime.now)
+    edited_date = models.DateTimeField(default=timezone.now)
 
 class WishlistItem(models.Model):
     wishlist = models.ForeignKey(Wishlist, on_delete=models.CASCADE)
