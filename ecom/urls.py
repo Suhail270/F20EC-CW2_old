@@ -25,7 +25,8 @@ from users.views import (LandingPageView,
                          PaymentView, 
                          PaymentSuccessView,
                          TrialSuccessView,
-                         ItemListView)
+                         ItemListView,
+                         SearchView)
 from django.contrib.auth.views import (
     LoginView, 
     LogoutView, 
@@ -41,6 +42,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # path('', OurTeamView.as_view(), name='landing-page'),
     path('', ItemListView.as_view(), name='landing-page'),
+    path('search/', SearchView.as_view(), name='products-list'),
     path("our-services/", ServicesView.as_view(), name='services'),
     path("vision/", VisionView.as_view(), name='vision'),
     path("our-team/", OurTeamView.as_view(), name='team'),
