@@ -34,6 +34,12 @@ class PaymentSuccessView(generic.TemplateView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
+
+class ItemDetailView(generic.DetailView):
+    model = Item
+    template_name = 'item_detail.html'
+    context_object_name = 'item_detail'
+
 @csrf_exempt
 def stripe_config(request):
     if request.method == 'GET':
