@@ -45,9 +45,9 @@ class ItemListView(generic.TemplateView):
     template_name = "products-display.html"
     context_object_name = "prods_list"
 
-    def get_queryset(self) :
-        queryset = Item.objects.all().values()
-        return queryset
+    # def get_queryset(self) :
+    #     queryset = Item.objects.all().values()
+    #     return queryset
 
     def get_context_data(self, **kwargs):
         context = super(ItemListView, self).get_context_data(**kwargs)
@@ -59,6 +59,7 @@ class ItemListView(generic.TemplateView):
             })
         
         return context  
+
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     

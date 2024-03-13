@@ -1,5 +1,6 @@
 import datetime
 from django.db.models.query import QuerySet
+from django.forms import model_to_dict
 from django.views import generic
 from django.http.response import JsonResponse
 from django.http import HttpResponse
@@ -10,20 +11,27 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
 import stripe
 from .models import Order,OrderItem,Item
+from django.template.loader import render_to_string
 
 # TODO add loginrequiredmixin
-class CartListView(generic.ListView):
+class CartListView(generic.TemplateView):
     template_name = "cart.html"
-    context_object_name = "items"
-
-    def get_queryset(self):
-        user = self.request.user
-        cart, created = Order.objects.get_or_create(
-            user = self.request.user,
-            ordered = False
-        )
-        queryset = OrderItem.objects.filter(order=cart)
-        return queryset
+    
+def load_cart_items(request):
+    user =  request.user
+    cart, created = Order.objects.get_or_create(
+        user = user,
+        ordered = False
+    )
+    order_items = OrderItem.objects.filter(order=cart)
+    l = []
+    for order_item in order_items:
+        l.append({
+            "id": order_item.id,
+            "quantity": order_item.quantity,
+            "item": model_to_dict(order_item.item)
+        })
+    return JsonResponse({"h": render_to_string(request=request, template_name="cart_list.html", context={"cart_items": l})})
     
 class PaymentView(generic.TemplateView):
     template_name = 'stripe.html'
@@ -95,7 +103,7 @@ def add_to_cart(request, id):
         ordered = False
     )
     
-    orderitems = OrderItem.objects.filter(Order=orderID,item=item).first()
+    orderitems = OrderItem.objects.filter(order=orderID,item=item).first()
 
     if orderitems is not None:
         orderitems.quantity +=1
