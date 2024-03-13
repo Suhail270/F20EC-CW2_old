@@ -107,5 +107,4 @@ def add_to_cart(request, id):
             quantity = 1
         )
     print("Added!")
-
-    return HttpResponse(status=200)
+    return JsonResponse({'message': 'Item added to cart successfully'})
