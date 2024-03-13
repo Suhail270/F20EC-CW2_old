@@ -1,29 +1,18 @@
-import datetime
-from django.db.models.query import QuerySet
 from django.views import generic
 from django.http.response import JsonResponse
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, render, redirect, reverse
+from django.shortcuts import render, redirect, reverse
 from django.conf import settings
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
 import stripe
-from .models import Order,OrderItem,Item
 
-# TODO add loginrequiredmixin
-class CartListView(generic.ListView):
+class CartView(generic.TemplateView):
     template_name = "cart.html"
-    context_object_name = "items"
 
-    def get_queryset(self):
-        user = self.request.user
-        cart, created = Order.objects.get_or_create(
-            user = self.request.user,
-            ordered = False
-        )
-        queryset = OrderItem.objects.filter(order=cart)
-        return queryset
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
     
 class PaymentView(generic.TemplateView):
     template_name = 'stripe.html'
@@ -86,47 +75,3 @@ def stripe_webhook(request):
         print("Payment was successful.")
 
     return HttpResponse(status=200)
-
-@csrf_exempt
-def add_to_cart(request, id):
-    item = get_object_or_404(Item, id=id)
-    orderID, created = Order.objects.get_or_create(
-        user = request.user,
-        ordered = False,
-        ordered_date = datetime.date.today()
-    )
-    
-    orderitems = OrderItem.objects.filter(order=orderID,item=item).first()
-
-    if orderitems is not None:
-        orderitems.quantity +=1
-        orderitems.save()
-    else:
-        OrderItem.objects.create(
-            order = orderID,
-            item = item,
-            quantity = 1
-        )
-    print("Added!")
-    return JsonResponse({'message': 'Item added to cart successfully'})
-
-# def remove_from_cart(request, id):
-#     order_item = OrderItem.objects.get(id=id)
-#     orderID, created = Order.objects.get_or_create(
-#         user = request.user,
-#         ordered = False
-#     )
-    
-#     orderitems = OrderItem.objects.filter(Order=orderID,item=item).first()
-
-#     if orderitems is not None:
-#         orderitems.quantity +=1
-#         orderitems.save()
-#     else:
-#         OrderItem.objects.create(
-#             order = orderID,
-#             item = item,
-#             quantity = 1
-#         )
-#     print("Added!")
-#     return JsonResponse({'message': 'Item added to cart successfully'})

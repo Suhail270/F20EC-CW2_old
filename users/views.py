@@ -1,17 +1,16 @@
-from django.db.models.query import QuerySet
 from django.views import generic
 from django.http.response import JsonResponse
 import string
 import csv
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, reverse
-from .forms import CustomUserCreationForm,SearchForm
-from sales.models import Item
+from .forms import CustomUserCreationForm
+
 # Create your views here.
 
-class LandingPageView(generic.ListView):
+class LandingPageView(generic.TemplateView):
     template_name = "landing.html"
-    
+
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect("services")
@@ -41,24 +40,8 @@ class OurTeamView(generic.TemplateView):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-class ItemListView(generic.TemplateView):
+class ProductListView(generic.TemplateView):
     template_name = "products-display.html"
-    context_object_name = "prods_list"
-
-    def get_queryset(self) :
-        queryset = Item.objects.all().values()
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super(ItemListView, self).get_context_data(**kwargs)
-        user = self.request.user
-        
-        queryset = Item.objects.all().values()[:24]
-        context.update({
-                "prods_list": queryset
-            })
-        
-        return context  
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
@@ -81,14 +64,3 @@ class TrialSuccessView(generic.TemplateView):
     template_name = "freeTrial.html"
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
-    
-class SearchView(generic.ListView):
-    template_name = 'products-display.html'
-    context_object_name = 'prods_list'
-    form_class = SearchForm
-
-    def get_queryset(self):
-        query = self.request.GET.get('query')
-        if query:
-            return Item.objects.filter(name__icontains=query)[:24]
-        return {}
