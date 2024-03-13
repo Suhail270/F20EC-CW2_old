@@ -5,7 +5,7 @@ import string
 import csv
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, reverse
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm,SearchForm
 from sales.models import Item
 # Create your views here.
 
@@ -53,10 +53,11 @@ class ItemListView(generic.TemplateView):
         context = super(ItemListView, self).get_context_data(**kwargs)
         user = self.request.user
         
-        queryset = Item.objects.all().values()
+        queryset = Item.objects.all().values()[:24]
         context.update({
                 "prods_list": queryset
             })
+        
         return context  
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -80,3 +81,14 @@ class TrialSuccessView(generic.TemplateView):
     template_name = "freeTrial.html"
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+    
+class SearchView(generic.ListView):
+    template_name = 'products-display.html'
+    context_object_name = 'prods_list'
+    form_class = SearchForm
+
+    def get_queryset(self):
+        query = self.request.GET.get('query')
+        if query:
+            return Item.objects.filter(name__icontains=query)[:24]
+        return {}

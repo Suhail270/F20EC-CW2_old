@@ -1,13 +1,14 @@
+import datetime
 from django.views import generic
 from django.http.response import JsonResponse
 from django.http import HttpResponse
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import get_object_or_404, render, redirect, reverse
 from django.conf import settings
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
 import stripe
-
+from .models import Order,OrderItem,Item
 class CartView(generic.TemplateView):
     template_name = "cart.html"
 
@@ -73,5 +74,30 @@ def stripe_webhook(request):
 
     if event['type'] == 'checkout.session.completed':
         print("Payment was successful.")
+
+    return HttpResponse(status=200)
+
+@csrf_exempt
+def add_to_cart(request,id):
+    item = get_object_or_404(Item,id=id)
+    orderID,created = Order.objects.get_or_create(
+        user = request.user,
+        ordered_date = datetime.date.today()
+        # ordered = False,
+        
+    )
+    
+    orderitems = OrderItem.objects.filter(Order=orderID,item=item).first()
+
+    if orderitems is not None:
+        orderitems.quantity +=1
+        orderitems.save()
+    else:
+        OrderItem.objects.create(
+            Order = orderID,
+            item = item,
+            quantity =1
+        )
+    print("Added!")
 
     return HttpResponse(status=200)
