@@ -1,6 +1,4 @@
 from django.db import models
-from users.models import User
-from django.utils import timezone
 
 class Item(models.Model):
     name = models.CharField(max_length=500)

@@ -25,8 +25,7 @@ from users.views import (LandingPageView,
                          PaymentView, 
                          PaymentSuccessView,
                          TrialSuccessView,
-                         ItemListView,
-                         SearchView)
+                         ProductListView)
 from django.contrib.auth.views import (
     LoginView, 
     LogoutView, 
@@ -35,15 +34,13 @@ from django.contrib.auth.views import (
     PasswordResetConfirmView,
     PasswordResetCompleteView
 )
-import sales.views
+
 # from sales.templates.sales.fonts import helvetiker.typeface.json
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     # path('', OurTeamView.as_view(), name='landing-page'),
-    path('', ItemListView.as_view(), name='landing-page'),
-    path('search/', SearchView.as_view(), name='products-list'),
-    path('add_to_cart/<int:id>/',sales.views.add_to_cart,name='add_to_cart'),
+    path('', ProductListView.as_view(), name='landing-page'),
     path("our-services/", ServicesView.as_view(), name='services'),
     path("vision/", VisionView.as_view(), name='vision'),
     path("our-team/", OurTeamView.as_view(), name='team'),

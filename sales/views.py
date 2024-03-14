@@ -4,16 +4,16 @@ from django.forms import model_to_dict
 from django.views import generic
 from django.http.response import JsonResponse
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, render, redirect, reverse
+from django.shortcuts import render, redirect, reverse
 from django.conf import settings
 from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
-import stripe
 from .models import Order,OrderItem,Item,Wishlist,WishlistItem
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+import stripe
 
 class CartListView(LoginRequiredMixin, generic.TemplateView):
     template_name = "cart.html"
@@ -50,6 +50,12 @@ def load_cart_items(request):
             "item": model_to_dict(order_item.item)
         })
     return JsonResponse({"h": render_to_string(request=request, template_name="cart_list.html", context={"cart_items": data})})
+
+class CartView(generic.TemplateView):
+    template_name = "cart.html"
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
     
 class PaymentView(generic.TemplateView):
     template_name = 'stripe.html'
@@ -110,7 +116,6 @@ def stripe_webhook(request):
 
     if event['type'] == 'checkout.session.completed':
         print("Payment was successful.")
-
     return HttpResponse(status=200)
 
 @login_required
