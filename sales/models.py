@@ -1,6 +1,4 @@
 from django.db import models
-from users.models import User
-from django.utils import timezone
 
 class Item(models.Model):
     name = models.CharField(max_length=500)
@@ -16,7 +14,7 @@ class Item(models.Model):
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     ordered = models.BooleanField(default=False)
-    ordered_date = models.DateTimeField()
+    ordered_date = models.DateTimeField(null=True)
     edited_date = models.DateTimeField(default=timezone.now)
 
 class OrderItem(models.Model):
