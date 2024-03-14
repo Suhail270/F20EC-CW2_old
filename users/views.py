@@ -42,6 +42,23 @@ class OurTeamView(generic.TemplateView):
 
 class ProductListView(generic.TemplateView):
     template_name = "products-display.html"
+    context_object_name = "prods_list"
+
+    # def get_queryset(self) :
+    #     queryset = Item.objects.all().values()
+    #     return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(ItemListView, self).get_context_data(**kwargs)
+        user = self.request.user
+        
+        queryset = Item.objects.all().values()[:24]
+        context.update({
+                "prods_list": queryset
+            })
+        
+        return context
+      
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
     
