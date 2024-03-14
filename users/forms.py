@@ -11,11 +11,11 @@ class UserModelForm(forms.ModelForm):
     class Meta:
         model = User
         fields = (
+            'first_name',
+            'last_name',
             'username',
             'email',
-            'mobile',
-            'organization',
-            'domain',
+            'address'
         )
 
     def clean_first_name(self):
@@ -30,3 +30,6 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = ("username",)
         field_classes = {'username': UsernameField}
+
+class SearchForm(forms.Form):
+    query = forms.CharField(max_length=100)
