@@ -12,12 +12,13 @@ from django.views.generic.base import TemplateView
 import stripe
 from .models import Order,OrderItem,Item,Wishlist,WishlistItem
 from django.template.loader import render_to_string
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-# TODO add loginrequiredmixin
-class CartListView(generic.TemplateView):
+class CartListView(LoginRequiredMixin, generic.TemplateView):
     template_name = "cart.html"
 
-class WishlistView(generic.TemplateView):
+class WishlistView(LoginRequiredMixin, generic.TemplateView):
     template_name = "wishlist.html"
 
 def load_wishlist(request):
@@ -112,7 +113,7 @@ def stripe_webhook(request):
 
     return HttpResponse(status=200)
 
-@csrf_exempt
+@login_required
 def add_to_cart(request, id):
     item = get_object_or_404(Item, id=id)
     orderID, created = Order.objects.get_or_create(
@@ -134,7 +135,7 @@ def add_to_cart(request, id):
     print("Added!")
     return JsonResponse({'message': 'Item added to cart successfully'})
 
-@csrf_exempt
+
 def remove_from_cart(request, id):
     OrderItem.objects.filter(id=id).first().delete()
     return JsonResponse({'message': 'item deleted'})
@@ -144,7 +145,7 @@ def remove_from_wishlist(request, id):
     WishlistItem.objects.filter(id=id).first().delete()
     return JsonResponse({'message': 'item deleted'})
 
-@csrf_exempt
+@login_required
 def add_to_wishlist(request, id):
     user = request.user
     item = get_object_or_404(Item, id=id)
